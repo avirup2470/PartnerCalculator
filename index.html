@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Male Partner Probability Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 8px;
+      border-radius: 9999px;
+      background: #e2e8f0;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      margin-top: -6px;
+      background-color: #4f46e5;
+      height: 20px;
+      width: 20px;
+      border-radius: 9999px;
+      border: 3px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(79, 70, 229, 0.45);
+      transition: transform 0.15s ease, background-color 0.15s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+      background-color: #4338ca;
+    }
+
+    input[type="range"]::-moz-range-track {
+      height: 8px;
+      border-radius: 9999px;
+      background: #e2e8f0;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      background-color: #4f46e5;
+      height: 20px;
+      width: 20px;
+      border-radius: 9999px;
+      border: 3px solid #ffffff;
+      box-shadow: 0 2px 6px rgba(79, 70, 229, 0.45);
+    }
+
+    input[type="range"]:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen antialiased selection:bg-indigo-100 selection:text-indigo-900">
+  <!-- Main Container -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+    <!-- Header Banner -->
+    <header class="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 sm:p-7 mb-6 sm:mb-8">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+        <div class="space-y-2 max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">
+            <span>Interactive Dataset Explorer</span>
+            <span>•</span>
+            <span>Independent Multiplication Model</span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900">
+            Male Partner Probability Calculator
+          </h1>
+          <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
+            Adjust sliders and tick boxes across income, age-range population share, marital status (single vs. divorced with age decay), net worth (in Lakhs), dowry preferences, state outlook, relationship dynamics, handsomeness, and height. Any trait can be switched off individually.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 shrink-0">
+          <button
+            id="resetBtn"
+            type="button"
+            class="px-4 py-2.5 rounded-xl text-sm font-semibold bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 border border-slate-200 transition cursor-pointer"
+          >
+            Reset All Filters
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Two-Column Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+      <!-- Left Controls Column -->
+      <section class="lg:col-span-7 space-y-5" aria-label="Trait filters and sliders">
+
+        <!-- 1. Age & Per Annum Income Card (Individual Sliders + Individual Off Checkboxes) -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 sm:p-6 space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900">1. Age &amp; Per Annum Income</h2>
+              <p class="text-xs sm:text-sm text-slate-500">
+                Toggle either slider off independently if you do not care about that filter.
+              </p>
+            </div>
+          </div>
+
+          <!-- Age Slider Block (Can be turned off individually) -->
+          <div class="rounded-xl bg-slate-50/90 border border-slate-200/70 p-4 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <label class="inline-flex items-center gap-2.5 cursor-pointer select-none">
+                <input
+                  id="ageSliderEnabledCheckbox"
+                  type="checkbox"
+                  checked
+                  class="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer"
+                />
+                <span class="text-sm font-semibold text-slate-800">Use Age Slider</span>
+              </label>
+
+              <span
+                id="ageReadout"
+                class="px-3 py-1 rounded-lg text-xs sm:text-sm font-bold bg-indigo-50 text-indigo-700 border border-indigo-100"
+              >
+                Age: 30
+              </span>
+            </div>
+
+            <input
+              id="ageSlider"
+              type="range"
+              min="0"
+              max="5"
+              step="1"
+              value="1"
+              aria-label="Target Age"
+              class="w-full"
+            />
+            <div class="flex justify-between text-[11px] sm:text-xs font-medium text-slate-400 px-0.5">
+              <span>25</span>
+              <span>30</span>
+              <span>35</span>
+              <span>40</span>
+              <span>45</span>
+              <span>50</span>
+            </div>
+            <p id="ageStatusNote" class="text-xs text-slate-500">
+              Active: Income table row is anchored at Age 30 and marital single-share decay uses Age 30.
+            </p>
+          </div>
+
+          <!-- Per Annum Income Slider Block (Can be turned off individually) -->
+          <div class="rounded-xl bg-slate-50/90 border border-slate-200/70 p-4 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <label class="inline-flex items-center gap-2.5 cursor-pointer select-none">
+                <input
+                  id="incomeSliderEnabledCheckbox"
+                  type="checkbox"
+                  checked
+                  class="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer"
+                />
+                <span class="text-sm font-semibold text-slate-800">Use Per Annum Income Slider</span>
+              </label>
+
+              <span
+                id="incomeReadout"
+                class="px-3 py-1 rounded-lg text-xs sm:text-sm font-bold bg-emerald-50 text-emerald-700 border border-emerald-100"
+              >
+                ₹5 LPA (13.00%)
+              </span>
+            </div>
+
+            <input
+              id="incomeSlider"
+              type="range"
+              min="0"
+              max="7"
+              step="1"
+              value="2"
+              aria-label="Minimum Per Annum Income"
+              class="w-full"
+            />
+            <div class="grid grid-cols-4 sm:grid-cols-8 gap-1 text-[10px] sm:text-[11px] font-medium text-slate-400 text-center">
+              <span>₹1L</span>
+              <span>₹3L</span>
+              <span>₹5L</span>
+              <span>₹8L</span>
+              <span>₹10L</span>
+              <span>₹25L</span>
+              <span>₹50L</span>
+              <span>₹1Cr</span>
+            </div>
+            <p id="incomeStatusNote" class="text-xs text-slate-500">
+              Active: Uses the Per Annum Income dataset percentage for the selected age and bracket.
+            </p>
+          </div>
+        </div>
+
+        <!-- 2. Target Age Range Population & Marital Status (Single / Divorced with Age Decay) -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 sm:p-6 space-y-6">
+          <div class="border-b border-slate-100 pb-4">
+            <h2 class="text-lg font-bold text-slate-900">2. Age-Range Population &amp; Marital Status</h2>
+            <p class="text-xs sm:text-sm text-slate-500">
+              Accounts for how many men fall into your target age band, plus single or divorced status where single share decreases with age.
+            </p>
+          </div>
+
+          <!-- Target Age Range Population Share -->
+          <div class="space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <label class="inline-flex items-center gap-2.5 cursor-pointer select-none">
+                <input
+                  id="agePoolCheckbox"
+                  type="checkbox"
+                  checked
+                  class="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer"
+                />
+                <span class="text-sm font-semibold text-slate-800">Include Target Age-Range Population Share</span>
+              </label>
+              <span
+                id="agePoolReadout"
+                class="px-3 py-1 rounded-lg text-xs sm:text-sm font-bold bg-indigo-50 text-indigo-700 border border-indigo-100"
+              >
+                25–34 yrs (18.00%)
+              </span>
+            </div>
+
+            <input
+              id="agePoolSlider"
+              type="range"
+              min="0"
+              max="3"
+              step="1"
+              value="1"
+              aria-label="Target Age Range Population Share"
+              class="w-full"
+            />
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-[11px] font-medium text-slate-500">
+              <span class="bg-slate-50 px-2 py-1 rounded text-center border border-slate-100">20–24 (19.5%)</span>
+              <span class="bg-slate-50 px-2 py-1 rounded text-center border border-slate-100">25–34 (18.0%)</span>
+              <span class="bg-slate-50 px-2 py-1 rounded text-center border border-slate-100">35–44 (14.2%)</span>
+              <span class="bg-slate-50 px-2 py-1 rounded text-center border border-slate-100">45–54 (10.5%)</span>
+            </div>
+          </div>
+
+          <!-- Single vs Divorced Men Checkboxes (Single decreases as age increases) -->
+          <div class="rounded-xl bg-slate-50/90 border border-slate-200/70 p-4 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <label class="inline-flex items-center gap-2.5 cursor-pointer select-none">
+                <input
+                  id="maritalSectionCheckbox"
+                  type="checkbox"
+                  checked
+                  class="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer"
+                />
+                <span class="text-sm font-semibold text-slate-800">Filter by Marital Status (Age-Adjusted)</span>
+              </label>
+              <span
+                id="maritalReadout"
+                class="px-3 py-1 rounded-lg text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200"
+              >
+                Combined: 0.00%
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <label class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white border border-slate-200 cursor-pointer hover:border-indigo-300 transition">
+                <span class="inline-flex items-center gap-2.5">
+                  <input
+                    id="singleCheckbox"
+                    type="checkbox"
+                    checked
+                    class="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer"
+                  />
+                  <span class="text-sm font-medium text-slate-800">Single (Never Married)</span>
+                </span>
+                <span id="singleAgeShareBadge" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">
+                  --%
+                </span>
+              </label>
+
+              <label class="flex items-center justify-between gap-3 p-3 rounded-xl bg-white border border-slate-200 cursor-pointer hover:border-indigo-300 transition">
+                <span class="inline-flex items-center gap-2.5">
+                  <input
+                    id="divorcedCheckbox"
+                    type="checkbox"
+                    class="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer"
+                  />
+                  <span class="text-sm font-medium text-slate-800">Divorced / Separated</span>
+                </span>
+                <span id="divorcedAgeShareBadge" class="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md">
+                  --%
+                </span>
+              </label>
+            </div>
+
+            <p id="maritalDecayNote" class="text-xs text-slate-500 leading-relaxed">
+              As age increases from 25 to 50, the share of single (never-married) men decreases while ever-married/divorced representation shifts with age.
+            </p>
+          </div>
+        </div>
+
+        <!-- 3. Net Worth (in Lakhs) & Dowry Preferences -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 sm:p-6 space-y-6">
+          <div class="border-b border-slate-100 pb-4">
+            <h2 class="text-lg font-bold text-slate-900">3. Net Worth (₹ Lakhs) &amp; Dowry</h2>
+            <p class="text-xs sm:text-sm text-slate-500">
+              All net worth values are expressed in Lakhs (₹ Lakhs / L), paired with state dowry breakdown data.
+            </p>
+          </div>
+
+          <!-- Net Worth in Lakhs -->
+          <div class="space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <label class="inline-flex items-center gap-2.5 cursor-pointer select-none">
+                <input
+                  id="nwCheckbox"
+                  type="checkbox"
+                  checked
+                  class="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer"
+                />
+                <span class="text-sm font-semibold text-slate-800">Minimum Net Worth (in ₹ Lakhs)</span>
+              </label>
+              <span
+                id="nwReadout"
+                class="px-3 py-1 rounded-lg text-xs sm:text-sm font-bold bg-indigo-50 text-indigo-700 border border-indigo-100"
+              >
+                ₹12 Lakhs (50%)
+              </span>
+            </div>
+
+            <input
+              id="nwSlider"
+              type="range"
+              min="0"
+              max="7"
+              step="1"
+              value="2"
+              aria-label="Minimum Net Worth in Lakhs"
+              class="w-full"
+            />
+            <div class="grid grid-cols-4 sm:grid-cols-8 gap-1 text-[10px] sm:text-[11px] font-medium text-slate-400 text-center">
+              <span>₹0.1L</span>
+              <span>₹2L</span>
+              <span>₹12L</span>
+              <span>₹27L</span>
+              <span>₹60L</span>
+              <span>₹100L</span>
+              <span>₹300L</span>
+              <span>₹2,000L</span>
+            </div>
+          </div>
+
+          <!-- Dowry State & Preference Checkboxes -->
+          <div class="rounded-xl bg-slate-50/90 border border-slate-200/70 p-4 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <label class="inline-flex items-center gap-2.5 cursor-pointer select-none">
+                <input
+                  id="dowryCheckbox"
+                  type="checkbox"
+                  checked
+                  class="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer"
+                />
+                <span class="text-sm font-semibold text-slate-800">Dowry Dataset Filter</span>
+              </label>
+              <span
+                id="dowryReadout"
+                class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-200/80 text-slate-800"
+              >
+                0.00%
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="dowryStateSelect" class="block text-xs font-semibold text-slate-600 mb-1">
+                  Dowry Survey Region / State
+                </label>
+                <select
+                  id="dowryStateSelect"
+                  class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none"
+                ></select>
+              </div>
+              <div class="space-y-1.5 pt-1 sm:pt-5">
+                <label class="flex items-center gap-2 text-xs sm:text-sm text-slate-700 cursor-pointer">
+                  <input id="dowryNoCheckbox" type="checkbox" checked class="w-4 h-4 rounded text-indigo-600 border-slate-300 cursor-pointer" />
+                  <span>NO dowry (<span id="dowryNoVal">0%</span>)</span>
+                </label>
+                <label class="flex items-center gap-2 text-xs sm:text-sm text-slate-700 cursor-pointer">
+                  <input id="dowryCashCheckbox" type="checkbox" class="w-4 h-4 rounded text-indigo-600 border-slate-300 cursor-pointer" />
+                  <span>Cash (<span id="dowryCashVal">0%</span>)</span>
+                </label>
+                <label class="flex items-center gap-2 text-xs sm:text-sm text-slate-700 cursor-pointer">
+                  <input id="dowryKindCheckbox" type="checkbox" class="w-4 h-4 rounded text-indigo-600 border-slate-300 cursor-pointer" />
+                  <span>In kind (<span id="dowryKindVal">0%</span>)</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. State-Wise Comparison & Relationship Category -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 sm:p-6 space-y-6">
+          <div class="border-b border-slate-100 pb-4">
+            <h2 class="text-lg font-bold text-slate-900">4. State Comparison &amp; Relationship Category</h2>
+            <p class="text-xs sm:text-sm text-slate-500">
+              Select states and relationship categories from your tables using checkboxes.
+            </p>
+          </div>
+
+          <!-- State-wise comparison checkboxes -->
+          <div class="space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <label class="inline-flex items-center gap-2.5 cursor-pointer select-none">
+                <input
+                  id="stateSectionCheckbox"
+                  type="checkbox"
+                  checked
+                  class="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer"
+                />
+                <span class="text-sm font-semibold text-slate-800">State-Wise Comparison of Indian Men</span>
+              </label>
+
+              <div class="flex items-center gap-2">
+                <select
+                  id="stateOutlookSelect"
+                  class="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 focus:border-indigo-500 outline-none"
+                >
+                  <option value="balanced">Balanced (%)</option>
+                  <option value="modern">Modern (%)</option>
+                  <option value="conservative">Conservative (%)</option>
+                </select>
+                <span
+                  id="stateReadout"
+                  class="px-3 py-1 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100"
+                >
+                  0.00%
+                </span>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              <button type="button" id="selectAllStatesBtn" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer">
+                Select All States
+              </button>
+              <button type="button" id="clearStatesBtn" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 cursor-pointer">
+                Clear All
+              </button>
+            </div>
+
+            <div
+              id="stateCheckboxesContainer"
+              class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-60 overflow-y-auto p-3 rounded-xl bg-slate-50 border border-slate-200/70"
+            ></div>
+          </div>
+
+          <!-- Relationship category checkboxes -->
+          <div class="space-y-3 pt-2 border-t border-slate-100">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <label class="inline-flex items-center gap-2.5 cursor-pointer select-none">
+                <input
+                  id="relSectionCheckbox"
+                  type="checkbox"
+                  checked
+                  class="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer"
+                />
+                <span class="text-sm font-semibold text-slate-800">Relationship Category (Estimated %)</span>
+              </label>
+              <span
+                id="relReadout"
+                class="px-3 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100"
+              >
+                0.00%
+              </span>
+            </div>
+
+            <div id="relCheckboxesContainer" class="space-y-2"></div>
+          </div>
+        </div>
+
+        <!-- 5. Handsomeness (Face Rating) & Height Dataset -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 sm:p-6 space-y-6">
+          <div class="border-b border-slate-100 pb-4">
+            <h2 class="text-lg font-bold text-slate-900">5. Handsomeness &amp; Height Dataset</h2>
+            <p class="text-xs sm:text-sm text-slate-500">
+              Adjust minimum face rating percentile and minimum height using sliders and checkboxes.
+            </p>
+          </div>
+
+          <!-- Handsomeness Slider -->
+          <div class="space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <label class="inline-flex items-center gap-2.5 cursor-pointer select-none">
+                <input
+                  id="faceCheckbox"
+                  type="checkbox"
+                  checked
+                  class="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer"
+                />
+                <span class="text-sm font-semibold text-slate-800">Minimum Handsomeness / Face Rating</span>
+              </label>
+              <span
+                id="faceReadout"
+                class="px-3 py-1 rounded-lg text-xs sm:text-sm font-bold bg-indigo-50 text-indigo-700 border border-indigo-100"
+              >
+                Rating 6 (42%)
+              </span>
+            </div>
+
+            <input
+              id="faceSlider"
+              type="range"
+              min="1"
+              max="10"
+              step="1"
+              value="6"
+              aria-label="Minimum Handsomeness Face Rating"
+              class="w-full"
+            />
+            <div class="flex justify-between text-[11px] font-medium text-slate-400 px-0.5">
+              <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+            </div>
+            <p id="faceDesc" class="text-xs text-slate-600 bg-slate-50 px-3 py-2 rounded-lg border border-slate-100">
+              Rating 6: Average (42% percentile)
+            </p>
+          </div>
+
+          <!-- Height Dataset Slider -->
+          <div class="space-y-3 pt-2 border-t border-slate-100">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <label class="inline-flex items-center gap-2.5 cursor-pointer select-none">
+                <input
+                  id="heightCheckbox"
+                  type="checkbox"
+                  checked
+                  class="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer"
+                />
+                <span class="text-sm font-semibold text-slate-800">Minimum Height (Height Dataset)</span>
+              </label>
+              <span
+                id="heightReadout"
+                class="px-3 py-1 rounded-lg text-xs sm:text-sm font-bold bg-purple-50 text-purple-700 border border-purple-100"
+              >
+                5'8" / 173 cm (48.00%)
+              </span>
+            </div>
+
+            <input
+              id="heightSlider"
+              type="range"
+              min="0"
+              max="7"
+              step="1"
+              value="3"
+              aria-label="Minimum Height"
+              class="w-full"
+            />
+            <div class="grid grid-cols-4 sm:grid-cols-8 gap-1 text-[10px] sm:text-[11px] font-medium text-slate-400 text-center">
+              <span>5'4"</span>
+              <span>5'6"</span>
+              <span>5'7"</span>
+              <span>5'8"</span>
+              <span>5'10"</span>
+              <span>6'0"</span>
+              <span>6'1"</span>
+              <span>6'2"+</span>
+            </div>
+            <p id="heightDesc" class="text-xs text-slate-600 bg-slate-50 px-3 py-2 rounded-lg border border-slate-100">
+              5'8" (173 cm): Estimated 48.00% of adult Indian men meet or exceed this height.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Results & Breakdown Column -->
+      <aside class="lg:col-span-5 lg:sticky lg:top-6 space-y-5" aria-label="Calculated probability output">
+        <div class="bg-slate-900 text-white rounded-2xl shadow-lg p-6 sm:p-7 space-y-5">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-300">
+              Combined Match Probability
+            </span>
+            <span
+              id="activeTraitsBadge"
+              class="text-xs font-semibold px-2.5 py-1 rounded-full bg-white/10 text-slate-200"
+            >
+              0 active traits
+            </span>
+          </div>
+
+          <div>
+            <div id="finalProbabilityText" class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
+              0.0000%
+            </div>
+            <p id="oddsRatioText" class="text-sm text-indigo-200 mt-1.5 font-medium">
+              Approximately 1 in — men
+            </p>
+          </div>
+
+          <div class="w-full bg-white/10 rounded-full h-2.5 overflow-hidden">
+            <div
+              id="probabilityBar"
+              class="bg-gradient-to-r from-indigo-400 via-sky-400 to-emerald-400 h-full rounded-full transition-all duration-300"
+              style="width: 0%"
+            ></div>
+          </div>
+
+          <p id="calcModeExplain" class="text-xs text-slate-300 leading-relaxed bg-white/5 rounded-xl p-3 border border-white/10">
+            Multiplies active trait probabilities together assuming traits are completely separate and independent. When nothing is selected, 100% of men match.
+          </p>
+
+          <!-- Congratulatory Headcount Banner: World, Country & State -->
+          <div class="bg-gradient-to-br from-emerald-500/20 via-indigo-500/20 to-purple-500/20 border border-emerald-400/30 rounded-2xl p-4 space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-xs sm:text-sm font-extrabold text-emerald-300">
+                🎉 Congratulations! Matching Men Estimate
+              </span>
+              <span id="userStateLabelBadge" class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-white/10 text-slate-200">
+                State: Maharashtra
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <div class="bg-slate-950/60 border border-white/10 rounded-xl p-3">
+                <div class="text-[11px] text-slate-400">In the World</div>
+                <div id="worldMenCount" class="text-base sm:text-lg font-extrabold text-white mt-0.5">0</div>
+                <div class="text-[10px] text-slate-400">men</div>
+              </div>
+
+              <div class="bg-slate-950/60 border border-white/10 rounded-xl p-3">
+                <div class="text-[11px] text-slate-400">In the Country (India)</div>
+                <div id="countryMenCount" class="text-base sm:text-lg font-extrabold text-emerald-300 mt-0.5">0</div>
+                <div class="text-[10px] text-slate-400">men</div>
+              </div>
+
+              <div class="bg-slate-950/60 border border-white/10 rounded-xl p-3">
+                <div class="text-[11px] text-slate-400">In Your State (<span id="userStateShortName">Maharashtra</span>)</div>
+                <div id="stateMenCount" class="text-base sm:text-lg font-extrabold text-indigo-300 mt-0.5">0</div>
+                <div class="text-[10px] text-slate-400">men</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Selected Snapshot Summary -->
+          <div class="grid grid-cols-2 gap-3 pt-1">
+            <div class="bg-white/5 rounded-xl p-3 border border-white/10">
+              <div class="text-[11px] text-slate-400">Age Filter</div>
+              <div id="summaryAge" class="text-sm font-bold text-white mt-0.5">Age 30</div>
+            </div>
+            <div class="bg-white/5 rounded-xl p-3 border border-white/10">
+              <div class="text-[11px] text-slate-400">Income Filter</div>
+              <div id="summaryIncome" class="text-sm font-bold text-white mt-0.5">₹5 LPA</div>
+            </div>
+            <div class="bg-white/5 rounded-xl p-3 border border-white/10">
+              <div class="text-[11px] text-slate-400">Net Worth (Lakhs)</div>
+              <div id="summaryNw" class="text-sm font-bold text-white mt-0.5">₹12 Lakhs</div>
+            </div>
+            <div class="bg-white/5 rounded-xl p-3 border border-white/10">
+              <div class="text-[11px] text-slate-400">Height Minimum</div>
+              <div id="summaryHeight" class="text-sm font-bold text-white mt-0.5">5'8" (173 cm)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Per-Trait Breakdown Card -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5 sm:p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-bold text-slate-900">Active Trait Breakdown</h3>
+            <span class="text-xs text-slate-500">Individually multiplied</span>
+          </div>
+          <div id="breakdownList" class="divide-y divide-slate-100 text-sm"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. DATASETS FROM USER TABLES + AGE-RANGE SHARE + MARITAL DECAY + HEIGHT
+    // =========================================================================
+
+    const AGES = [25, 30, 35, 40, 45, 50];
+
+    const INCOME_BRACKETS = [
+      { label: "₹1 LPA", short: "₹1L" },
+      { label: "₹3 LPA", short: "₹3L" },
+      { label: "₹5 LPA", short: "₹5L" },
+      { label: "₹8 LPA", short: "₹8L" },
+      { label: "₹10 LPA", short: "₹10L" },
+      { label: "₹25 LPA", short: "₹25L" },
+      { label: "₹50 LPA", short: "₹50L" },
+      { label: "₹100 LPA (₹1 Cr)", short: "₹1Cr" }
+    ];
+
+    // Rows: Age 25, 30, 35, 40, 45, 50
+    // Columns: ₹1L, ₹3L, ₹5L, ₹8L, ₹10L, ₹25L, ₹50L, ₹100L
+    const INCOME_TABLE = {
+      25: [40.0, 7.50, 3.40, 1.90, 1.30, 0.26, 0.04, 0.01],
+      30: [54.0, 13.00, 6.30, 3.60, 2.50, 0.77, 0.14, 0.04],
+      35: [61.0, 16.50, 8.30, 4.90, 3.40, 1.18, 0.24, 0.08],
+      40: [63.0, 18.00, 9.10, 5.50, 3.90, 1.42, 0.30, 0.11],
+      45: [61.0, 17.20, 8.70, 5.20, 3.70, 1.44, 0.32, 0.12],
+      50: [56.0, 15.10, 7.60, 4.50, 3.20, 1.29, 0.30, 0.13]
+    };
+
+    // Target age-range population share (% of adult men in each age band)
+    const AGE_RANGE_POPULATION = [
+      { label: "20–24 yrs", pct: 19.5, note: "20–24 age band represents ~19.5% of adult men." },
+      { label: "25–34 yrs", pct: 18.0, note: "25–34 age band represents ~18.0% of adult men." },
+      { label: "35–44 yrs", pct: 14.2, note: "35–44 age band represents ~14.2% of adult men." },
+      { label: "45–54 yrs", pct: 10.5, note: "45–54 age band represents ~10.5% of adult men." }
+    ];
+
+    // Age-dependent marital status share (% of men at that age):
+    // As age increases from 25 to 50, single (never-married) share steadily decreases.
+    const MARITAL_BY_AGE = {
+      25: { singlePct: 76.0, divorcedPct: 0.4 },
+      30: { singlePct: 42.0, divorcedPct: 0.9 },
+      35: { singlePct: 19.0, divorcedPct: 1.4 },
+      40: { singlePct: 9.5,  divorcedPct: 1.8 },
+      45: { singlePct: 5.2,  divorcedPct: 2.1 },
+      50: { singlePct: 3.1,  divorcedPct: 2.3 }
+    };
+
+    // Net worth values in ₹ Lakhs (VALUE in Lakhs -> percentile in dataset)
+    const NET_WORTH_DATA = [
+      { lakhs: 0.1,  label: "₹0.1 Lakhs",   short: "₹0.1L",   pct: 100.0 },
+      { lakhs: 2,    label: "₹2 Lakhs",     short: "₹2L",     pct: 90.0 },
+      { lakhs: 12,   label: "₹12 Lakhs",    short: "₹12L",    pct: 50.0 },
+      { lakhs: 27,   label: "₹27 Lakhs",    short: "₹27L",    pct: 25.0 },
+      { lakhs: 60,   label: "₹60 Lakhs",    short: "₹60L",    pct: 10.0 },
+      { lakhs: 100,  label: "₹100 Lakhs",   short: "₹100L",   pct: 5.0 },
+      { lakhs: 300,  label: "₹300 Lakhs",   short: "₹300L",   pct: 1.0 },
+      { lakhs: 2000, label: "₹2,000 Lakhs", short: "₹2,000L", pct: 0.1 }
+    ];
+
+    // Dowry dataset (Cash %, In kind %, NO dowry %)
+    const DOWRY_DATA = [
+      { state: "Uttar Pradesh",     cash: 44.00, kind: 51.90, noDowry: 3.90 },
+      { state: "Rajasthan",         cash: 29.90, kind: 53.60, noDowry: 15.70 },
+      { state: "Punjab/Haryana*",   cash: 16.10, kind: 77.60, noDowry: 6.30 },
+      { state: "Odisha",            cash: 33.80, kind: 42.90, noDowry: 22.00 },
+      { state: "Madhya Pradesh",    cash: 17.60, kind: 68.80, noDowry: 13.10 },
+      { state: "Maharashtra",       cash: 21.30, kind: 52.70, noDowry: 24.10 },
+      { state: "All surveyed states", cash: 29.10, kind: 56.10, noDowry: 14.00 }
+    ];
+
+    // State-wise comparison of Indian men (Conservative %, Modern %, Balanced %)
+    const STATE_COMPARISON_DATA = [
+      { state: "Maharashtra",       conservative: 30, modern: 30, balanced: 40 },
+      { state: "Gujarat",           conservative: 40, modern: 22, balanced: 38 },
+      { state: "Rajasthan",         conservative: 50, modern: 15, balanced: 35 },
+      { state: "Punjab",            conservative: 35, modern: 25, balanced: 40 },
+      { state: "Haryana",           conservative: 50, modern: 15, balanced: 35 },
+      { state: "Uttar Pradesh",     conservative: 50, modern: 15, balanced: 35 },
+      { state: "Bihar",             conservative: 50, modern: 12, balanced: 38 },
+      { state: "West Bengal",       conservative: 25, modern: 30, balanced: 45 },
+      { state: "Kerala",            conservative: 20, modern: 35, balanced: 45 },
+      { state: "Tamil Nadu",        conservative: 30, modern: 30, balanced: 40 },
+      { state: "Karnataka",         conservative: 25, modern: 35, balanced: 40 },
+      { state: "Telangana",         conservative: 35, modern: 25, balanced: 40 },
+      { state: "Andhra Pradesh",    conservative: 35, modern: 25, balanced: 40 },
+      { state: "Goa",               conservative: 15, modern: 45, balanced: 40 },
+      { state: "Madhya Pradesh",    conservative: 40, modern: 20, balanced: 40 },
+      { state: "Chhattisgarh",      conservative: 35, modern: 20, balanced: 45 },
+      { state: "Jharkhand",         conservative: 35, modern: 25, balanced: 40 },
+      { state: "Assam",             conservative: 25, modern: 30, balanced: 45 },
+      { state: "Odisha",            conservative: 30, modern: 25, balanced: 45 },
+      { state: "Himachal Pradesh",  conservative: 30, modern: 25, balanced: 45 },
+      { state: "Uttarakhand",       conservative: 35, modern: 25, balanced: 40 },
+      { state: "Sikkim",            conservative: 20, modern: 40, balanced: 40 },
+      { state: "Meghalaya",         conservative: 20, modern: 35, balanced: 45 },
+      { state: "Manipur",           conservative: 30, modern: 25, balanced: 45 },
+      { state: "Mizoram",           conservative: 20, modern: 35, balanced: 45 },
+      { state: "Nagaland",          conservative: 25, modern: 30, balanced: 45 },
+      { state: "Tripura",           conservative: 25, modern: 30, balanced: 45 },
+      { state: "Arunachal Pradesh", conservative: 25, modern: 30, balanced: 45 }
+    ];
+
+    // Relationship category dataset (Estimated %)
+    const RELATIONSHIP_CATEGORIES = [
+      { id: "deeply_loving", label: "Deeply loving, loyal, caring and trusting", pct: 20 },
+      { id: "loving_freedom", label: "Loving, gives wife considerable freedom and independence", pct: 20 },
+      { id: "moderate", label: "Moderate relationship, normal ups and downs", pct: 30 },
+      { id: "arguments", label: "Frequent arguments, emotional dissatisfaction", pct: 15 },
+      { id: "troubled", label: "Highly troubled relationship, serious marital conflict", pct: 8 },
+      { id: "divorce", label: "Divorce or permanent separation", pct: 3 },
+      { id: "criminal", label: "Criminal proceedings involving marital disputes", pct: 4 }
+    ];
+
+    // Handsomeness / Face Rating dataset (Rating 1 to 10 -> percentile & description)
+    const FACE_RATING_DATA = [
+      { rating: 1,  pct: 1.0,  label: "Extremely uncommon facial appearance; significant asymmetry or unusual proportions" },
+      { rating: 2,  pct: 3.0,  label: "Ugly" },
+      { rating: 3,  pct: 7.0,  label: "Very low conventional attractiveness" },
+      { rating: 4,  pct: 15.0, label: "Below-average conventional attractiveness" },
+      { rating: 5,  pct: 30.0, label: "Slightly below average" },
+      { rating: 6,  pct: 42.0, label: "Average" },
+      { rating: 7,  pct: 65.0, label: "Average" },
+      { rating: 8,  pct: 85.0, label: "Above average" },
+      { rating: 9,  pct: 97.0, label: "Attractive" },
+      { rating: 10, pct: 99.9, label: "Very attractive" }
+    ];
+
+    // Height dataset (Estimated % of men meeting or exceeding the selected height)
+    const HEIGHT_DATA = [
+      { imperial: `5'4"`,  cm: 163, short: `5'4"`,  pct: 88.0 },
+      { imperial: `5'6"`,  cm: 168, short: `5'6"`,  pct: 74.0 },
+      { imperial: `5'7"`,  cm: 170, short: `5'7"`,  pct: 62.0 },
+      { imperial: `5'8"`,  cm: 173, short: `5'8"`,  pct: 48.0 },
+      { imperial: `5'10"`, cm: 178, short: `5'10"`, pct: 24.0 },
+      { imperial: `6'0"`,  cm: 183, short: `6'0"`,  pct: 9.5 },
+      { imperial: `6'1"`,  cm: 185, short: `6'1"`,  pct: 4.2 },
+      { imperial: `6'2"+`, cm: 188, short: `6'2"+`, pct: 1.8 }
+    ];
+
+    // Male population reference baselines (World, India, and State-level male population)
+    const WORLD_MALE_POPULATION = 4120000000;
+    const INDIA_MALE_POPULATION = 745000000;
+    const USER_DEFAULT_STATE = "Maharashtra";
+    const STATE_MALE_POPULATION = {
+      "Maharashtra": 66500000,
+      "Gujarat": 38200000,
+      "Rajasthan": 43800000,
+      "Punjab": 16800000,
+      "Haryana": 16600000,
+      "Uttar Pradesh": 127500000,
+      "Bihar": 68400000,
+      "West Bengal": 51800000,
+      "Kerala": 17300000,
+      "Tamil Nadu": 39200000,
+      "Karnataka": 35600000,
+      "Telangana": 19800000,
+      "Andhra Pradesh": 27400000,
+      "Goa": 820000,
+      "Madhya Pradesh": 45600000,
+      "Chhattisgarh": 16100000,
+      "Jharkhand": 20900000,
+      "Assam": 18800000,
+      "Odisha": 23800000,
+      "Himachal Pradesh": 3800000,
+      "Uttarakhand": 6100000,
+      "Sikkim": 360000,
+      "Meghalaya": 1800000,
+      "Manipur": 1650000,
+      "Mizoram": 650000,
+      "Nagaland": 1180000,
+      "Tripura": 2150000,
+      "Arunachal Pradesh": 850000
+    };
+
+    // =========================================================================
+    // 2. DOM REFERENCES & INITIALIZATION
+    // =========================================================================
+
+    const els = {
+      ageSliderEnabledCheckbox: document.getElementById("ageSliderEnabledCheckbox"),
+      ageSlider: document.getElementById("ageSlider"),
+      ageReadout: document.getElementById("ageReadout"),
+      ageStatusNote: document.getElementById("ageStatusNote"),
+
+      incomeSliderEnabledCheckbox: document.getElementById("incomeSliderEnabledCheckbox"),
+      incomeSlider: document.getElementById("incomeSlider"),
+      incomeReadout: document.getElementById("incomeReadout"),
+      incomeStatusNote: document.getElementById("incomeStatusNote"),
+
+      agePoolCheckbox: document.getElementById("agePoolCheckbox"),
+      agePoolSlider: document.getElementById("agePoolSlider"),
+      agePoolReadout: document.getElementById("agePoolReadout"),
+
+      maritalSectionCheckbox: document.getElementById("maritalSectionCheckbox"),
+      singleCheckbox: document.getElementById("singleCheckbox"),
+      divorcedCheckbox: document.getElementById("divorcedCheckbox"),
+      singleAgeShareBadge: document.getElementById("singleAgeShareBadge"),
+      divorcedAgeShareBadge: document.getElementById("divorcedAgeShareBadge"),
+      maritalReadout: document.getElementById("maritalReadout"),
+      maritalDecayNote: document.getElementById("maritalDecayNote"),
+
+      nwCheckbox: document.getElementById("nwCheckbox"),
+      nwSlider: document.getElementById("nwSlider"),
+      nwReadout: document.getElementById("nwReadout"),
+
+      dowryCheckbox: document.getElementById("dowryCheckbox"),
+      dowryStateSelect: document.getElementById("dowryStateSelect"),
+      dowryNoCheckbox: document.getElementById("dowryNoCheckbox"),
+      dowryCashCheckbox: document.getElementById("dowryCashCheckbox"),
+      dowryKindCheckbox: document.getElementById("dowryKindCheckbox"),
+      dowryNoVal: document.getElementById("dowryNoVal"),
+      dowryCashVal: document.getElementById("dowryCashVal"),
+      dowryKindVal: document.getElementById("dowryKindVal"),
+      dowryReadout: document.getElementById("dowryReadout"),
+
+      stateSectionCheckbox: document.getElementById("stateSectionCheckbox"),
+      stateOutlookSelect: document.getElementById("stateOutlookSelect"),
+      stateCheckboxesContainer: document.getElementById("stateCheckboxesContainer"),
+      stateReadout: document.getElementById("stateReadout"),
+      selectAllStatesBtn: document.getElementById("selectAllStatesBtn"),
+      clearStatesBtn: document.getElementById("clearStatesBtn"),
+
+      relSectionCheckbox: document.getElementById("relSectionCheckbox"),
+      relCheckboxesContainer: document.getElementById("relCheckboxesContainer"),
+      relReadout: document.getElementById("relReadout"),
+
+      faceCheckbox: document.getElementById("faceCheckbox"),
+      faceSlider: document.getElementById("faceSlider"),
+      faceReadout: document.getElementById("faceReadout"),
+      faceDesc: document.getElementById("faceDesc"),
+
+      heightCheckbox: document.getElementById("heightCheckbox"),
+      heightSlider: document.getElementById("heightSlider"),
+      heightReadout: document.getElementById("heightReadout"),
+      heightDesc: document.getElementById("heightDesc"),
+
+      finalProbabilityText: document.getElementById("finalProbabilityText"),
+      oddsRatioText: document.getElementById("oddsRatioText"),
+      probabilityBar: document.getElementById("probabilityBar"),
+      activeTraitsBadge: document.getElementById("activeTraitsBadge"),
+      worldMenCount: document.getElementById("worldMenCount"),
+      countryMenCount: document.getElementById("countryMenCount"),
+      stateMenCount: document.getElementById("stateMenCount"),
+      userStateLabelBadge: document.getElementById("userStateLabelBadge"),
+      userStateShortName: document.getElementById("userStateShortName"),
+      summaryAge: document.getElementById("summaryAge"),
+      summaryIncome: document.getElementById("summaryIncome"),
+      summaryNw: document.getElementById("summaryNw"),
+      summaryHeight: document.getElementById("summaryHeight"),
+      breakdownList: document.getElementById("breakdownList"),
+      resetBtn: document.getElementById("resetBtn")
+    };
+
+    function populateDynamicControls() {
+      // Populate Dowry state dropdown
+      els.dowryStateSelect.innerHTML = "";
+      DOWRY_DATA.forEach((item, idx) => {
+        const opt = document.createElement("option");
+        opt.value = String(idx);
+        opt.textContent = item.state;
+        if (item.state === "All surveyed states") opt.selected = true;
+        els.dowryStateSelect.appendChild(opt);
+      });
+
+      // Populate State-wise comparison checkboxes
+      els.stateCheckboxesContainer.innerHTML = "";
+      STATE_COMPARISON_DATA.forEach((item, idx) => {
+        const label = document.createElement("label");
+        label.className =
+          "flex items-center gap-2 text-xs text-slate-700 bg-white px-2.5 py-1.5 rounded-lg border border-slate-200/80 cursor-pointer hover:border-indigo-300 transition";
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.dataset.stateIdx = String(idx);
+        cb.className = "state-cb w-3.5 h-3.5 rounded text-indigo-600 border-slate-300 cursor-pointer";
+        if (item.state === "Maharashtra") cb.checked = true;
+
+        const span = document.createElement("span");
+        span.className = "truncate font-medium";
+        span.textContent = item.state;
+
+        label.appendChild(cb);
+        label.appendChild(span);
+        els.stateCheckboxesContainer.appendChild(label);
+      });
+
+      // Populate Relationship category checkboxes
+      els.relCheckboxesContainer.innerHTML = "";
+      RELATIONSHIP_CATEGORIES.forEach((rel, idx) => {
+        const label = document.createElement("label");
+        label.className =
+          "flex items-center justify-between gap-3 p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100/80 border border-slate-200/70 cursor-pointer transition";
+        const left = document.createElement("span");
+        left.className = "inline-flex items-center gap-2.5";
+
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.dataset.relIdx = String(idx);
+        cb.className = "rel-cb w-4 h-4 rounded text-indigo-600 border-slate-300 cursor-pointer";
+        if (idx === 0 || idx === 1) cb.checked = true;
+
+        const text = document.createElement("span");
+        text.className = "text-xs sm:text-sm font-medium text-slate-800";
+        text.textContent = rel.label;
+
+        left.appendChild(cb);
+        left.appendChild(text);
+
+        const badge = document.createElement("span");
+        badge.className = "text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md shrink-0";
+        badge.textContent = `${rel.pct}%`;
+
+        label.appendChild(left);
+        label.appendChild(badge);
+        els.relCheckboxesContainer.appendChild(label);
+      });
+    }
+
+    // =========================================================================
+    // 3. CALCULATION & UI RENDERING
+    // =========================================================================
+
+    function formatPercent(val) {
+      if (!Number.isFinite(val) || val <= 0) return "0.0000%";
+      if (val >= 100) return "100.00%";
+      if (val >= 10) return `${val.toFixed(2)}%`;
+      if (val >= 1) return `${val.toFixed(3)}%`;
+      return `${val.toFixed(4)}%`;
+    }
+
+    function formatMenHeadcount(exactCount) {
+      if (!Number.isFinite(exactCount) || exactCount <= 0) return "0";
+      if (exactCount < 1) return "< 1";
+      return Math.round(exactCount).toLocaleString();
+    }
+
+    function calculateAndRender() {
+      try {
+        const ageSliderOn = els.ageSliderEnabledCheckbox.checked;
+        const incomeSliderOn = els.incomeSliderEnabledCheckbox.checked;
+
+        els.ageSlider.disabled = !ageSliderOn;
+        els.incomeSlider.disabled = !incomeSliderOn;
+
+        const ageIdx = Number(els.ageSlider.value);
+        const age = AGES[ageIdx] ?? 30;
+        const incomeIdx = Number(els.incomeSlider.value);
+        const incomeMeta = INCOME_BRACKETS[incomeIdx] ?? INCOME_BRACKETS[2];
+
+        // Age readout & note
+        if (ageSliderOn) {
+          els.ageReadout.textContent = `Age: ${age}`;
+          els.ageStatusNote.textContent = `Active: Age slider is set to ${age}.`;
+          els.summaryAge.textContent = `Age ${age}`;
+        } else {
+          els.ageReadout.textContent = "Age: Off";
+          els.ageStatusNote.textContent = "Turned off: Age slider is ignored (defaults to Age 30 reference if income or marital status is used).";
+          els.summaryAge.textContent = "Ignored";
+        }
+
+        // Income percentage
+        const referenceAge = ageSliderOn ? age : 30;
+        const incomePct = INCOME_TABLE[referenceAge][incomeIdx];
+        if (incomeSliderOn) {
+          els.incomeReadout.textContent = `${incomeMeta.label} (${incomePct.toFixed(2)}%)`;
+          els.incomeStatusNote.textContent = `Active: ${incomePct.toFixed(2)}% at ${incomeMeta.label} (Age ${referenceAge} table row).`;
+          els.summaryIncome.textContent = `${incomeMeta.label} (${incomePct.toFixed(2)}%)`;
+        } else {
+          els.incomeReadout.textContent = "Income: Off";
+          els.incomeStatusNote.textContent = "Turned off: Per Annum Income slider is ignored.";
+          els.summaryIncome.textContent = "Ignored";
+        }
+
+        // Target Age-Range Population Share
+        const agePoolOn = els.agePoolCheckbox.checked;
+        els.agePoolSlider.disabled = !agePoolOn;
+        const agePoolItem = AGE_RANGE_POPULATION[Number(els.agePoolSlider.value)] ?? AGE_RANGE_POPULATION[1];
+        els.agePoolReadout.textContent = `${agePoolItem.label} (${agePoolItem.pct.toFixed(2)}%)`;
+
+        // Marital Status (Single decreases with age; Divorced included)
+        const maritalOn = els.maritalSectionCheckbox.checked;
+        els.singleCheckbox.disabled = !maritalOn;
+        els.divorcedCheckbox.disabled = !maritalOn;
+
+        const maritalRow = MARITAL_BY_AGE[referenceAge] ?? MARITAL_BY_AGE[30];
+        els.singleAgeShareBadge.textContent = `${maritalRow.singlePct.toFixed(1)}%`;
+        els.divorcedAgeShareBadge.textContent = `${maritalRow.divorcedPct.toFixed(1)}%`;
+
+        let maritalPct = 0;
+        if (els.singleCheckbox.checked) maritalPct += maritalRow.singlePct;
+        if (els.divorcedCheckbox.checked) maritalPct += maritalRow.divorcedPct;
+        els.maritalReadout.textContent = `Combined: ${maritalPct.toFixed(2)}%`;
+        els.maritalDecayNote.textContent = `At age ${referenceAge}, single share is ${maritalRow.singlePct.toFixed(1)}% (declines with older age) and divorced/separated share is ${maritalRow.divorcedPct.toFixed(1)}%.`;
+
+        // Net Worth (in Lakhs)
+        const nwOn = els.nwCheckbox.checked;
+        els.nwSlider.disabled = !nwOn;
+        const nwItem = NET_WORTH_DATA[Number(els.nwSlider.value)] ?? NET_WORTH_DATA[2];
+        els.nwReadout.textContent = `${nwItem.label} (${nwItem.pct}%)`;
+        els.summaryNw.textContent = nwOn ? `${nwItem.short} (${nwItem.pct}%)` : "Ignored";
+
+        // Dowry Dataset
+        const dowryOn = els.dowryCheckbox.checked;
+        const dowryItem = DOWRY_DATA[Number(els.dowryStateSelect.value)] ?? DOWRY_DATA[DOWRY_DATA.length - 1];
+        els.dowryNoVal.textContent = `${dowryItem.noDowry.toFixed(2)}%`;
+        els.dowryCashVal.textContent = `${dowryItem.cash.toFixed(2)}%`;
+        els.dowryKindVal.textContent = `${dowryItem.kind.toFixed(2)}%`;
+
+        let dowryPct = 0;
+        if (els.dowryNoCheckbox.checked) dowryPct += dowryItem.noDowry;
+        if (els.dowryCashCheckbox.checked) dowryPct += dowryItem.cash;
+        if (els.dowryKindCheckbox.checked) dowryPct += dowryItem.kind;
+        els.dowryReadout.textContent = `${dowryPct.toFixed(2)}%`;
+
+        // State-wise Comparison
+        const stateOn = els.stateSectionCheckbox.checked;
+        const outlookKey = els.stateOutlookSelect.value;
+        const selectedStateCbs = Array.from(document.querySelectorAll(".state-cb:checked"));
+        let statePct = 0;
+        selectedStateCbs.forEach((cb) => {
+          const st = STATE_COMPARISON_DATA[Number(cb.dataset.stateIdx)];
+          if (st) statePct += st[outlookKey];
+        });
+        els.stateReadout.textContent = `${statePct.toFixed(2)}%`;
+
+        // Relationship Category
+        const relOn = els.relSectionCheckbox.checked;
+        const selectedRelCbs = Array.from(document.querySelectorAll(".rel-cb:checked"));
+        let relPct = 0;
+        selectedRelCbs.forEach((cb) => {
+          const rel = RELATIONSHIP_CATEGORIES[Number(cb.dataset.relIdx)];
+          if (rel) relPct += rel.pct;
+        });
+        els.relReadout.textContent = `${relPct.toFixed(2)}%`;
+
+        // Handsomeness / Face Rating
+        const faceOn = els.faceCheckbox.checked;
+        els.faceSlider.disabled = !faceOn;
+        const faceRatingVal = Number(els.faceSlider.value);
+        const faceItem = FACE_RATING_DATA.find((f) => f.rating === faceRatingVal) ?? FACE_RATING_DATA[5];
+        els.faceReadout.textContent = `Rating ${faceItem.rating} (${faceItem.pct}%)`;
+        els.faceDesc.textContent = `Rating ${faceItem.rating}: ${faceItem.label} (${faceItem.pct}% percentile)`;
+
+        // Height Dataset
+        const heightOn = els.heightCheckbox.checked;
+        els.heightSlider.disabled = !heightOn;
+        const heightItem = HEIGHT_DATA[Number(els.heightSlider.value)] ?? HEIGHT_DATA[3];
+        els.heightReadout.textContent = `${heightItem.imperial} / ${heightItem.cm} cm (${heightItem.pct.toFixed(2)}%)`;
+        els.heightDesc.textContent = `${heightItem.imperial} (${heightItem.cm} cm): Estimated ${heightItem.pct.toFixed(2)}% of adult Indian men meet or exceed this height.`;
+        els.summaryHeight.textContent = heightOn ? `${heightItem.short} (${heightItem.pct.toFixed(1)}%)` : "Ignored";
+
+        // Collect all active factors (assuming traits are completely independent)
+        const factors = [];
+        if (incomeSliderOn) {
+          factors.push({
+            name: `Per Annum Income (${incomeMeta.label}, Age ${referenceAge})`,
+            pct: incomePct,
+            active: true
+          });
+        } else {
+          factors.push({
+            name: "Per Annum Income Slider",
+            pct: null,
+            active: false
+          });
+        }
+
+        if (ageSliderOn) {
+          factors.push({
+            name: `Selected Age (${age} yrs)`,
+            pct: 100.0,
+            active: true,
+            note: "Age anchor active"
+          });
+        } else {
+          factors.push({
+            name: "Age Slider",
+            pct: null,
+            active: false
+          });
+        }
+
+        if (agePoolOn) {
+          factors.push({
+            name: `Age-Range Population (${agePoolItem.label})`,
+            pct: agePoolItem.pct,
+            active: true
+          });
+        } else {
+          factors.push({ name: "Age-Range Population", pct: null, active: false });
+        }
+
+        if (maritalOn) {
+          factors.push({
+            name: `Marital Status (Age ${referenceAge})`,
+            pct: maritalPct,
+            active: true
+          });
+        } else {
+          factors.push({ name: "Marital Status", pct: null, active: false });
+        }
+
+        if (nwOn) {
+          factors.push({
+            name: `Net Worth ≥ ${nwItem.label}`,
+            pct: nwItem.pct,
+            active: true
+          });
+        } else {
+          factors.push({ name: "Net Worth (Lakhs)", pct: null, active: false });
+        }
+
+        if (dowryOn) {
+          factors.push({
+            name: `Dowry (${dowryItem.state})`,
+            pct: dowryPct,
+            active: true
+          });
+        } else {
+          factors.push({ name: "Dowry Filter", pct: null, active: false });
+        }
+
+        if (stateOn) {
+          factors.push({
+            name: `State Comparison (${selectedStateCbs.length} selected, ${outlookKey})`,
+            pct: statePct,
+            active: true
+          });
+        } else {
+          factors.push({ name: "State Comparison", pct: null, active: false });
+        }
+
+        if (relOn) {
+          factors.push({
+            name: `Relationship Category (${selectedRelCbs.length} selected)`,
+            pct: relPct,
+            active: true
+          });
+        } else {
+          factors.push({ name: "Relationship Category", pct: null, active: false });
+        }
+
+        if (faceOn) {
+          factors.push({
+            name: `Handsomeness Rating ≥ ${faceItem.rating}`,
+            pct: faceItem.pct,
+            active: true
+          });
+        } else {
+          factors.push({ name: "Handsomeness", pct: null, active: false });
+        }
+
+        if (heightOn) {
+          factors.push({
+            name: `Height ≥ ${heightItem.imperial} (${heightItem.cm} cm)`,
+            pct: heightItem.pct,
+            active: true
+          });
+        } else {
+          factors.push({ name: "Height Dataset", pct: null, active: false });
+        }
+
+        // Multiply active trait probabilities independently: prod(pct / 100) * 100
+        // If nothing is selected/active, probability is 100% of men.
+        const activeFactors = factors.filter((f) => f.active);
+        els.activeTraitsBadge.textContent = `${activeFactors.length} active ${activeFactors.length === 1 ? "trait" : "traits"}`;
+
+        let probDecimal = 1;
+        if (activeFactors.length > 0) {
+          for (const f of activeFactors) {
+            probDecimal *= Math.max(0, Math.min(100, f.pct)) / 100;
+          }
+        }
+        const combinedPct = probDecimal * 100;
+
+        els.finalProbabilityText.textContent = formatPercent(combinedPct);
+
+        if (activeFactors.length === 0) {
+          els.oddsRatioText.textContent = "Nothing selected — 100% of men match";
+        } else if (combinedPct > 0) {
+          const oneInX = Math.round(100 / combinedPct);
+          els.oddsRatioText.textContent =
+            oneInX <= 1
+              ? "Approximately all men in active pool"
+              : `Approximately 1 in ${oneInX.toLocaleString()} men`;
+        } else {
+          els.oddsRatioText.textContent = "0% match under current active filters";
+        }
+
+        const barWidth = Math.min(100, Math.max(0, combinedPct));
+        els.probabilityBar.style.width = `${barWidth}%`;
+
+        // Determine user's state (first selected state if any, otherwise default Maharashtra)
+        const activeUserState =
+          selectedStateCbs.length > 0
+            ? (STATE_COMPARISON_DATA[Number(selectedStateCbs[0].dataset.stateIdx)]?.state || USER_DEFAULT_STATE)
+            : USER_DEFAULT_STATE;
+        const stateMaleBase = STATE_MALE_POPULATION[activeUserState] ?? STATE_MALE_POPULATION[USER_DEFAULT_STATE];
+
+        els.userStateLabelBadge.textContent = `State: ${activeUserState}`;
+        els.userStateShortName.textContent = activeUserState;
+        els.worldMenCount.textContent = formatMenHeadcount(WORLD_MALE_POPULATION * probDecimal);
+        els.countryMenCount.textContent = formatMenHeadcount(INDIA_MALE_POPULATION * probDecimal);
+        els.stateMenCount.textContent = formatMenHeadcount(stateMaleBase * probDecimal);
+
+        // Render Breakdown List
+        els.breakdownList.innerHTML = "";
+        factors.forEach((f) => {
+          const row = document.createElement("div");
+          row.className = "py-2.5 flex items-center justify-between gap-3";
+
+          const nameEl = document.createElement("span");
+          nameEl.className = f.active
+            ? "text-xs sm:text-sm font-medium text-slate-800"
+            : "text-xs sm:text-sm text-slate-400 line-through";
+          nameEl.textContent = f.name;
+
+          const valEl = document.createElement("span");
+          if (!f.active) {
+            valEl.className = "text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-400 shrink-0";
+            valEl.textContent = "OFF";
+          } else {
+            valEl.className = "text-xs sm:text-sm font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-md shrink-0";
+            valEl.textContent = `${Number(f.pct).toFixed(2)}%`;
+          }
+
+          row.appendChild(nameEl);
+          row.appendChild(valEl);
+          els.breakdownList.appendChild(row);
+        });
+      } catch (err) {
+        console.error("Error calculating probability:", err);
+      }
+    }
+
+    function resetAllFilters() {
+      els.ageSliderEnabledCheckbox.checked = true;
+      els.ageSlider.value = "1";
+
+      els.incomeSliderEnabledCheckbox.checked = true;
+      els.incomeSlider.value = "2";
+
+      els.agePoolCheckbox.checked = true;
+      els.agePoolSlider.value = "1";
+
+      els.maritalSectionCheckbox.checked = true;
+      els.singleCheckbox.checked = true;
+      els.divorcedCheckbox.checked = false;
+
+      els.nwCheckbox.checked = true;
+      els.nwSlider.value = "2";
+
+      els.dowryCheckbox.checked = true;
+      els.dowryStateSelect.value = String(DOWRY_DATA.findIndex((d) => d.state === "All surveyed states"));
+      els.dowryNoCheckbox.checked = true;
+      els.dowryCashCheckbox.checked = false;
+      els.dowryKindCheckbox.checked = false;
+
+      els.stateSectionCheckbox.checked = true;
+      els.stateOutlookSelect.value = "balanced";
+      document.querySelectorAll(".state-cb").forEach((cb) => {
+        const st = STATE_COMPARISON_DATA[Number(cb.dataset.stateIdx)];
+        cb.checked = st && st.state === "Maharashtra";
+      });
+
+      els.relSectionCheckbox.checked = true;
+      document.querySelectorAll(".rel-cb").forEach((cb) => {
+        const idx = Number(cb.dataset.relIdx);
+        cb.checked = idx === 0 || idx === 1;
+      });
+
+      els.faceCheckbox.checked = true;
+      els.faceSlider.value = "6";
+
+      els.heightCheckbox.checked = true;
+      els.heightSlider.value = "3";
+
+      calculateAndRender();
+    }
+
+    // Attach listeners
+    function bindEvents() {
+      const inputsToWatch = [
+        els.ageSliderEnabledCheckbox,
+        els.ageSlider,
+        els.incomeSliderEnabledCheckbox,
+        els.incomeSlider,
+        els.agePoolCheckbox,
+        els.agePoolSlider,
+        els.maritalSectionCheckbox,
+        els.singleCheckbox,
+        els.divorcedCheckbox,
+        els.nwCheckbox,
+        els.nwSlider,
+        els.dowryCheckbox,
+        els.dowryStateSelect,
+        els.dowryNoCheckbox,
+        els.dowryCashCheckbox,
+        els.dowryKindCheckbox,
+        els.stateSectionCheckbox,
+        els.stateOutlookSelect,
+        els.relSectionCheckbox,
+        els.faceCheckbox,
+        els.faceSlider,
+        els.heightCheckbox,
+        els.heightSlider
+      ];
+
+      inputsToWatch.forEach((el) => {
+        el.addEventListener("input", calculateAndRender);
+        el.addEventListener("change", calculateAndRender);
+      });
+
+      els.stateCheckboxesContainer.addEventListener("change", calculateAndRender);
+      els.relCheckboxesContainer.addEventListener("change", calculateAndRender);
+
+      els.selectAllStatesBtn.addEventListener("click", () => {
+        document.querySelectorAll(".state-cb").forEach((cb) => (cb.checked = true));
+        calculateAndRender();
+      });
+
+      els.clearStatesBtn.addEventListener("click", () => {
+        document.querySelectorAll(".state-cb").forEach((cb) => (cb.checked = false));
+        calculateAndRender();
+      });
+
+      els.resetBtn.addEventListener("click", resetAllFilters);
+    }
+
+    populateDynamicControls();
+    bindEvents();
+    calculateAndRender();
+  </script>
+</body>
+</html>
